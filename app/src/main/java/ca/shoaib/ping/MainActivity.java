@@ -57,7 +57,6 @@ public class MainActivity extends ActionBarActivity {
                 NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
                 if (networkInfo != null && networkInfo.isConnected()) {
-                    pb.setVisibility(ProgressBar.VISIBLE);
                     new PingTask().execute(stringUrl);
 
                 } else {
@@ -72,7 +71,7 @@ public class MainActivity extends ActionBarActivity {
 
 
         if(url.equals("")) url = (String)et.getHint();
-        String command = "/system/bin/ping -c 10 -q -i 0.2 " + url;
+        String command = "/system/bin/ping -c 5 -q -i 0.2 " + url;
 
 
         String result = "";
@@ -117,7 +116,7 @@ public class MainActivity extends ActionBarActivity {
     private String discardDecimal(String number) {
         String delim = "[.]";
         String[] tokens = number.split(delim);
-        return tokens[0] + "ms";
+        return tokens[0] + " ms";
     }
 
 
@@ -149,9 +148,14 @@ public class MainActivity extends ActionBarActivity {
     // an InputStream. Finally, the InputStream is converted into a string, which is
     // displayed in the UI by the AsyncTask's onPostExecute method.
     private class PingTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            pb.setVisibility(ProgressBar.VISIBLE);
+        }
+
         @Override
         protected String doInBackground(String... urls) {
-
 
             try {
                 return ping(urls[0]);
