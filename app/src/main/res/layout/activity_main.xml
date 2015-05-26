@@ -18,6 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginTop="24dp"
+        android:color="@android:color/holo_blue_dark"
         android:text="Ping"
         android:id="@+id/ping_start"/>
 
@@ -33,7 +34,6 @@
         android:layout_height="wrap_content"
         android:textSize="50sp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="24dp"
         android:id="@+id/ping_result"/>
 
 </LinearLayout>

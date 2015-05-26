@@ -22,7 +22,6 @@ import java.io.InputStreamReader;
 
 /**
  * Todo:
- * Show progressbar when doing ping
  * Show packet sending animation when doing ping
  * Create icon
  *
@@ -34,6 +33,7 @@ public class MainActivity extends ActionBarActivity {
     private TextView tv;
     private EditText et;
     private ProgressBar pb;
+    private Button btn;
 
 
     @Override
@@ -43,8 +43,8 @@ public class MainActivity extends ActionBarActivity {
 
         pb = (ProgressBar) findViewById(R.id.progress_bar);
 
-        final Button pingButton = (Button) findViewById(R.id.ping_start);
-        pingButton.setOnClickListener(new View.OnClickListener() {
+        btn = (Button) findViewById(R.id.ping_start);
+        btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 tv = (TextView) findViewById(R.id.ping_result);
                 tv.setText("");
@@ -123,7 +123,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        //getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -143,15 +143,14 @@ public class MainActivity extends ActionBarActivity {
     }
 
     // Uses AsyncTask to create a task away from the main UI thread. This task takes a
-    // URL string and uses it to create an HttpUrlConnection. Once the connection
-    // has been established, the AsyncTask downloads the contents of the webpage as
-    // an InputStream. Finally, the InputStream is converted into a string, which is
-    // displayed in the UI by the AsyncTask's onPostExecute method.
+    // URL string and uses it to initiate a ping.
     private class PingTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
             pb.setVisibility(ProgressBar.VISIBLE);
+            btn.setEnabled(false);
+
         }
 
         @Override
@@ -168,6 +167,7 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected void onPostExecute(String result) {
             pb.setVisibility(ProgressBar.INVISIBLE);
+            btn.setEnabled(true);
             tv.setText(result);
         }
     }
