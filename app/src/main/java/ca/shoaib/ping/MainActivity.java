@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 
 /**
  * Todo:
+ * Cancel ping once started, if click on cancel button
  * Hide keyboard when clicked outside of kb
  */
 
