@@ -1,6 +1,7 @@
 package ca.shoaib.ping;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -22,14 +24,18 @@ import java.io.InputStreamReader;
 
 /**
  * Todo:
- * Show packet sending animation when doing ping
+ * Show label for url
+ * Hide keyboard when clicked outside of kb
  * Create icon
- *
+ * Publish on Google Play store
  */
 
 public class MainActivity extends ActionBarActivity {
 
     private static final String DEBUG_TAG = "PING";
+    private static final String ERROR_PING_FAILED = "ERROR_PING_FAILED";
+    private static final String ERROR_NO_INTERNET = "ERROR_NO_INTERNET";
+
     private TextView tv;
     private EditText et;
     private ProgressBar pb;
@@ -60,8 +66,16 @@ public class MainActivity extends ActionBarActivity {
                     new PingTask().execute(stringUrl);
 
                 } else {
-                    tv.setText("No Internet");
+                    tv.setTextSize(20);
+                    tv.setTextColor(Color.RED);
+                    tv.setText(R.string.no_internet);
                 }
+
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
             }
         });
     }
@@ -160,7 +174,7 @@ public class MainActivity extends ActionBarActivity {
                 return ping(urls[0]);
             } catch (Exception e) {
                 Log.e(DEBUG_TAG, "exception", e);
-                return "Ping failed.\nURL may be invalid.";
+                return ERROR_PING_FAILED;
             }
         }
         // onPostExecute displays the results of the AsyncTask.
@@ -168,7 +182,16 @@ public class MainActivity extends ActionBarActivity {
         protected void onPostExecute(String result) {
             pb.setVisibility(ProgressBar.INVISIBLE);
             btn.setEnabled(true);
-            tv.setText(result);
+            if(result.equals(ERROR_PING_FAILED)) {
+                tv.setTextSize(20);
+                tv.setText(R.string.ping_failed);
+                tv.setTextColor(Color.RED);
+            } else {
+                tv.setTextSize(50);
+                tv.setTextColor(Color.GRAY);
+                tv.setText(result);
+            }
+
         }
     }
 }
