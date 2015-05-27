@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -24,10 +25,7 @@ import java.io.InputStreamReader;
 
 /**
  * Todo:
- * Show label for url
  * Hide keyboard when clicked outside of kb
- * Create icon
- * Publish on Google Play store
  */
 
 public class MainActivity extends ActionBarActivity {
@@ -48,14 +46,15 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         pb = (ProgressBar) findViewById(R.id.progress_bar);
-
+        et = (EditText) findViewById(R.id.ping_destination);
+        tv = (TextView) findViewById(R.id.ping_result);
         btn = (Button) findViewById(R.id.ping_start);
+
         btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                tv = (TextView) findViewById(R.id.ping_result);
+
                 tv.setText("");
 
-                et = (EditText) findViewById(R.id.ping_destination);
                 String stringUrl = et.getText().toString();
 
                 ConnectivityManager connMgr = (ConnectivityManager)
@@ -75,9 +74,31 @@ public class MainActivity extends ActionBarActivity {
                         getSystemService(Context.INPUT_METHOD_SERVICE);
 
                 inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-                        InputMethodManager.HIDE_NOT_ALWAYS);
+                        InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                        //InputMethodManager.HIDE_NOT_ALWAYS);
             }
         });
+
+        et.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_LEFT = 0;
+                final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+                final int DRAWABLE_BOTTOM = 3;
+
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if(event.getRawX() >= (et.getRight() - et.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        et.setText("");
+                        et.selectAll();
+
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
     }
 
 
