@@ -35,10 +35,13 @@ public class MainActivity extends ActionBarActivity {
     private static final String ERROR_PING_FAILED = "ERROR_PING_FAILED";
     private static final String ERROR_NO_INTERNET = "ERROR_NO_INTERNET";
 
+    private boolean PING_IN_PROGRESS = false;
+
     private TextView tv;
     private EditText et;
     private ProgressBar pb;
     private Button btn;
+    private AsyncTask pingTask;
 
 
     @Override
@@ -51,32 +54,40 @@ public class MainActivity extends ActionBarActivity {
         tv = (TextView) findViewById(R.id.ping_result);
         btn = (Button) findViewById(R.id.ping_start);
 
+        btn.setBackgroundColor(Color.rgb(31, 73, 212));
+
         btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                tv.setText("");
+                if(PING_IN_PROGRESS) {
 
-                String stringUrl = et.getText().toString();
-
-                ConnectivityManager connMgr = (ConnectivityManager)
-                        getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-
-                if (networkInfo != null && networkInfo.isConnected()) {
-                    new PingTask().execute(stringUrl);
+                    pb.setVisibility(ProgressBar.INVISIBLE);
+                    pingTask.cancel(true);
 
                 } else {
-                    tv.setTextSize(20);
-                    tv.setTextColor(Color.RED);
-                    tv.setText(R.string.no_internet);
+
+                    String stringUrl = et.getText().toString();
+
+                    ConnectivityManager connMgr = (ConnectivityManager)
+                            getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+                    if (networkInfo != null && networkInfo.isConnected()) {
+                        pingTask = new PingTask().execute(stringUrl);
+
+                    } else {
+                        tv.setTextSize(20);
+                        tv.setTextColor(Color.RED);
+                        tv.setText(R.string.no_internet);
+                    }
+
+                    InputMethodManager inputManager = (InputMethodManager)
+                            getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                            InputMethodManager.RESULT_UNCHANGED_SHOWN);
                 }
 
-                InputMethodManager inputManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-
-                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-                        InputMethodManager.RESULT_UNCHANGED_SHOWN);
-                        //InputMethodManager.HIDE_NOT_ALWAYS);
             }
         });
 
@@ -184,8 +195,12 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         protected void onPreExecute() {
+            tv.setText("");
             pb.setVisibility(ProgressBar.VISIBLE);
-            btn.setEnabled(false);
+            btn.setText(R.string.cancel);
+            PING_IN_PROGRESS = true;
+
+            btn.setBackgroundColor(Color.rgb(212, 72, 28));
 
         }
 
@@ -203,7 +218,11 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected void onPostExecute(String result) {
             pb.setVisibility(ProgressBar.INVISIBLE);
-            btn.setEnabled(true);
+            btn.setText(R.string.ping);
+            PING_IN_PROGRESS = false;
+
+            btn.setBackgroundColor(Color.rgb(31, 73, 212));
+
             if(result.equals(ERROR_PING_FAILED)) {
                 tv.setTextSize(20);
                 tv.setText(R.string.ping_failed);
@@ -214,6 +233,14 @@ public class MainActivity extends ActionBarActivity {
                 tv.setText(result);
             }
 
+        }
+
+        @Override
+        protected void onCancelled(){
+            btn.setText(R.string.ping);
+            btn.setBackgroundColor(Color.rgb(31, 73, 212));
+            pb.setVisibility(ProgressBar.INVISIBLE);
+            PING_IN_PROGRESS = false;
         }
     }
 }
