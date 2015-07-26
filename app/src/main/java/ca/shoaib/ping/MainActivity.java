@@ -22,7 +22,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,7 +39,10 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class MainActivity extends ActionBarActivity {
+/**
+ * TODO:
+ */
+public class MainActivity extends AppCompatActivity {
 
     private static final String DEBUG_TAG = "PING";
     private static final String ERROR_PING_FAILED = "ERROR_PING_FAILED";
@@ -64,7 +67,7 @@ public class MainActivity extends ActionBarActivity {
         tv = (TextView) findViewById(R.id.ping_result);
         btn = (Button) findViewById(R.id.ping_start);
 
-        btn.setBackgroundColor(Color.rgb(31, 73, 212));
+        //btn.setBackgroundColor(Color.rgb(31, 73, 212));
 
         btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -210,7 +213,7 @@ public class MainActivity extends ActionBarActivity {
             btn.setText(R.string.cancel);
             PING_IN_PROGRESS = true;
 
-            btn.setBackgroundColor(Color.rgb(212, 72, 28));
+            //btn.setBackgroundColor(Color.rgb(212, 72, 28));
 
         }
 
@@ -231,7 +234,7 @@ public class MainActivity extends ActionBarActivity {
             btn.setText(R.string.ping);
             PING_IN_PROGRESS = false;
 
-            btn.setBackgroundColor(Color.rgb(31, 73, 212));
+            //btn.setBackgroundColor(Color.rgb(31, 73, 212));
 
             if(result.equals(ERROR_PING_FAILED)) {
                 tv.setTextSize(20);
@@ -248,7 +251,7 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected void onCancelled(){
             btn.setText(R.string.ping);
-            btn.setBackgroundColor(Color.rgb(31, 73, 212));
+            //btn.setBackgroundColor(Color.rgb(31, 73, 212));
             pb.setVisibility(ProgressBar.INVISIBLE);
             PING_IN_PROGRESS = false;
         }
