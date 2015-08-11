@@ -40,7 +40,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * TODO:
+ * TODO: Use searchview for typing in web address
  */
 public class MainActivity extends AppCompatActivity {
 
