@@ -1,0 +1,21 @@
+08-11 14:57:11.186  11254-11299/? D/PingTask﹕ rtt min/avg/max/mdev = 287.472/331.360/376.042/33.916 ms, pipe 2
+08-11 14:57:11.187  11254-11299/? D/PingTask﹕ rtt min
+08-11 14:57:11.187  11254-11299/? D/PingTask﹕ avg
+08-11 14:57:11.187  11254-11299/? D/PingTask﹕ max
+08-11 14:57:11.187  11254-11299/? D/PingTask﹕ mdev = 287.472
+08-11 14:57:11.187  11254-11299/? D/PingTask﹕ 331.360
+08-11 14:57:11.187  11254-11299/? D/PingTask﹕ 376.042
+08-11 14:57:11.187  11254-11299/? D/PingTask﹕ 33.916 ms, pipe 2
+08-11 15:02:19.566  12983-13269/? D/PingTask﹕ [ 08-11 15:02:19.566 12983:13269 D/PingTask ]
+08-11 15:02:19.568  12983-13269/? E/PingTask﹕ exception
+    java.lang.ArrayIndexOutOfBoundsException: length=1; index=4
+            at ca.shoaib.ping.PingTask.parseMeanRTT(PingTask.java:143)
+            at ca.shoaib.ping.PingTask.ping(PingTask.java:133)
+            at ca.shoaib.ping.PingTask.doInBackground(PingTask.java:66)
+            at ca.shoaib.ping.PingTask.doInBackground(PingTask.java:32)
+            at android.os.AsyncTask$2.call(AsyncTask.java:292)
+            at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+            at android.os.AsyncTask$SerialExecutor$1.run(AsyncTask.java:231)
+            at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
+            at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
+            at java.lang.Thread.run(Thread.java:818)

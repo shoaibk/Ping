@@ -23,7 +23,6 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -34,22 +33,13 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 /**
  * TODO: Use searchview for typing in web address
  */
 public class MainActivity extends AppCompatActivity {
 
-    private static final String DEBUG_TAG = "PING";
-    private static final String ERROR_PING_FAILED = "ERROR_PING_FAILED";
-    private static final String ERROR_NO_INTERNET = "ERROR_NO_INTERNET";
 
-    private boolean PING_IN_PROGRESS = false;
-
+    private static boolean PING_IN_PROGRESS = false;
     private TextView tv;
     private EditText et;
     private ProgressBar pb;
@@ -86,7 +76,9 @@ public class MainActivity extends AppCompatActivity {
                     NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
                     if (networkInfo != null && networkInfo.isConnected()) {
-                        pingTask = new PingTask().execute(stringUrl);
+                        pingTask = new PingTask(MainActivity.this, tv, pb, btn).execute(stringUrl);
+                        pb.setVisibility(ProgressBar.VISIBLE);
+                        PING_IN_PROGRESS = true;
 
                     } else {
                         tv.setTextSize(20);
@@ -127,57 +119,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private String ping(String url) {
 
-
-        if(url.equals("")) url = (String)et.getHint();
-        String command = "/system/bin/ping -c 5 -q -i 0.2 " + url;
-
-
-        String result = "";
-        Process process = null;
-        String lastLine = "";
-        try {
-            process = Runtime.getRuntime().exec(command);
-            DataInputStream osRes = new DataInputStream(process.getInputStream());
-            BufferedReader reader = new BufferedReader(new InputStreamReader(osRes));
-
-            String line;
-
-            try {
-                while ((line = reader.readLine()) != null || reader.read() !=-1) {
-
-                    result += line + "\n";
-                    lastLine = line;
-
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            Log.d(DEBUG_TAG, lastLine);
-        }
-        return parseMeanRTT(lastLine);
-    }
-
-    private String parseMeanRTT(String lastLine) {
-        String delims = "[/]+";
-        String[] tokens = lastLine.split(delims);
-        for(int i = 0; i < tokens.length; i++) {
-            Log.d(DEBUG_TAG, tokens[i]);
-        }
-
-        return discardDecimal(tokens[4]);
-
-    }
-
-    private String discardDecimal(String number) {
-        String delim = "[.]";
-        String[] tokens = number.split(delim);
-        return tokens[0] + " ms";
-    }
 
 
     @Override
@@ -204,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Uses AsyncTask to create a task away from the main UI thread. This task takes a
     // URL string and uses it to initiate a ping.
-    private class PingTask extends AsyncTask<String, Void, String> {
+    /*private class PingTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -255,5 +197,5 @@ public class MainActivity extends AppCompatActivity {
             pb.setVisibility(ProgressBar.INVISIBLE);
             PING_IN_PROGRESS = false;
         }
-    }
+    }*/
 }
