@@ -1,3 +1,37 @@
+------------------------------------------------------------------------
+Ping works:
+
+08-11 22:17:43.293    3310-3739/? D/PingTask﹕ result =
+08-11 22:17:43.293    3310-3739/? D/PingTask﹕ PING www.google.com (66.185.95.40) 56(84) bytes of data.
+    --- www.google.com ping statistics ---
+    3 packets transmitted, 3 received, 0% packet loss, time 474ms
+    rtt min/avg/max/mdev = 22.799/25.993/30.734/3.421 ms
+08-11 22:17:43.293    3310-3739/? D/PingTask﹕ lastLine =
+08-11 22:17:43.293    3310-3739/? D/PingTask﹕ rtt min/avg/max/mdev = 22.799/25.993/30.734/3.421 ms
+
+-------------------------------------------------------------------------
+Destination Unreachable (from emulator or from a network that blocks ping)
+
+08-11 21:24:36.030    2677-2700/? D/PingTask﹕ result =
+08-11 21:24:36.031    2677-2700/? D/PingTask﹕ PING www.google.com (66.185.95.24) 56(84) bytes of data.
+    --- www.google.com ping statistics ---
+    3 packets transmitted, 0 received, 100% packet loss, time 453ms
+08-11 21:24:36.031    2677-2700/? D/PingTask﹕ lastLine =
+08-11 21:24:36.031    2677-2700/? D/PingTask﹕ [ 08-11 21:24:36.031  2677: 2700 E/PingTask ]
+    exception
+    java.lang.ArrayIndexOutOfBoundsException: length=1; index=4
+            at ca.shoaib.ping.PingTask.parseMeanRTT(PingTask.java:119)
+            at ca.shoaib.ping.PingTask.ping(PingTask.java:109)
+            at ca.shoaib.ping.PingTask.doInBackground(PingTask.java:55)
+            at ca.shoaib.ping.PingTask.doInBackground(PingTask.java:28)
+            at android.os.AsyncTask$2.call(AsyncTask.java:288)
+            at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+            at android.os.AsyncTask$SerialExecutor$1.run(AsyncTask.java:231)
+            at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
+            at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
+            at java.lang.Thread.run(Thread.java:818)
+
+------------------------------------------------------
 08-11 14:57:11.186  11254-11299/? D/PingTask﹕ rtt min/avg/max/mdev = 287.472/331.360/376.042/33.916 ms, pipe 2
 08-11 14:57:11.187  11254-11299/? D/PingTask﹕ rtt min
 08-11 14:57:11.187  11254-11299/? D/PingTask﹕ avg
@@ -13,6 +47,24 @@
             at ca.shoaib.ping.PingTask.ping(PingTask.java:133)
             at ca.shoaib.ping.PingTask.doInBackground(PingTask.java:66)
             at ca.shoaib.ping.PingTask.doInBackground(PingTask.java:32)
+            at android.os.AsyncTask$2.call(AsyncTask.java:292)
+            at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+            at android.os.AsyncTask$SerialExecutor$1.run(AsyncTask.java:231)
+            at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
+            at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
+            at java.lang.Thread.run(Thread.java:818)
+
+------------------------------------------------------------------------------
+
+PING www.google.com (74.125.226.176) 56(84) bytes of data.
+    --- www.google.com ping statistics ---
+    3 packets transmitted, 0 received, 100% packet loss, time 491ms
+08-11 16:32:34.658  26378-26537/? E/PingTask﹕ exception
+    java.lang.ArrayIndexOutOfBoundsException: length=1; index=4
+            at ca.shoaib.ping.PingTask.parseMeanRTT(PingTask.java:117)
+            at ca.shoaib.ping.PingTask.ping(PingTask.java:107)
+            at ca.shoaib.ping.PingTask.doInBackground(PingTask.java:55)
+            at ca.shoaib.ping.PingTask.doInBackground(PingTask.java:28)
             at android.os.AsyncTask$2.call(AsyncTask.java:292)
             at java.util.concurrent.FutureTask.run(FutureTask.java:237)
             at android.os.AsyncTask$SerialExecutor$1.run(AsyncTask.java:231)

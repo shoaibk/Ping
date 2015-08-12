@@ -13,10 +13,10 @@
   ~
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ca.shoaib.ping" >
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -34,6 +34,14 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".PingDetailActivity"
+            android:label="@string/title_activity_ping_detail"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ca.shoaib.ping.MainActivity" />
         </activity>
     </application>
 

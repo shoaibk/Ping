@@ -38,13 +38,11 @@ import android.widget.TextView;
  */
 public class MainActivity extends AppCompatActivity {
 
-
-    private static boolean PING_IN_PROGRESS = false;
     private TextView tv;
     private EditText et;
     private ProgressBar pb;
     private Button btn;
-    private AsyncTask pingTask;
+    //private AsyncTask pingTask;
 
 
     @Override
@@ -57,42 +55,29 @@ public class MainActivity extends AppCompatActivity {
         tv = (TextView) findViewById(R.id.ping_result);
         btn = (Button) findViewById(R.id.ping_start);
 
-        //btn.setBackgroundColor(Color.rgb(31, 73, 212));
-
         btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                if(PING_IN_PROGRESS) {
+                String stringUrl = et.getText().toString();
 
-                    pb.setVisibility(ProgressBar.INVISIBLE);
-                    pingTask.cancel(true);
+                ConnectivityManager connMgr = (ConnectivityManager)
+                        getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+                if (networkInfo != null && networkInfo.isConnected()) {
+                    AsyncTask pingTask = new PingTask(MainActivity.this).execute(stringUrl);
 
                 } else {
-
-                    String stringUrl = et.getText().toString();
-
-                    ConnectivityManager connMgr = (ConnectivityManager)
-                            getSystemService(Context.CONNECTIVITY_SERVICE);
-                    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-
-                    if (networkInfo != null && networkInfo.isConnected()) {
-                        pingTask = new PingTask(MainActivity.this, tv, pb, btn).execute(stringUrl);
-                        pb.setVisibility(ProgressBar.VISIBLE);
-                        PING_IN_PROGRESS = true;
-
-                    } else {
-                        tv.setTextSize(20);
-                        tv.setTextColor(Color.RED);
-                        tv.setText(R.string.no_internet);
-                    }
-
-                    InputMethodManager inputManager = (InputMethodManager)
-                            getSystemService(Context.INPUT_METHOD_SERVICE);
-
-                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-                            InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                    tv.setTextSize(20);
+                    tv.setTextColor(Color.RED);
+                    tv.setText(R.string.no_internet);
                 }
 
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.RESULT_UNCHANGED_SHOWN);
             }
         });
 
@@ -104,8 +89,8 @@ public class MainActivity extends AppCompatActivity {
                 final int DRAWABLE_RIGHT = 2;
                 final int DRAWABLE_BOTTOM = 3;
 
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if(event.getRawX() >= (et.getRight() - et.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (event.getRawX() >= (et.getRight() - et.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
                         et.setText("");
                         et.selectAll();
 
@@ -117,10 +102,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -144,58 +125,4 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // Uses AsyncTask to create a task away from the main UI thread. This task takes a
-    // URL string and uses it to initiate a ping.
-    /*private class PingTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            tv.setText("");
-            pb.setVisibility(ProgressBar.VISIBLE);
-            btn.setText(R.string.cancel);
-            PING_IN_PROGRESS = true;
-
-            //btn.setBackgroundColor(Color.rgb(212, 72, 28));
-
-        }
-
-        @Override
-        protected String doInBackground(String... urls) {
-
-            try {
-                return ping(urls[0]);
-            } catch (Exception e) {
-                Log.e(DEBUG_TAG, "exception", e);
-                return ERROR_PING_FAILED;
-            }
-        }
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            pb.setVisibility(ProgressBar.INVISIBLE);
-            btn.setText(R.string.ping);
-            PING_IN_PROGRESS = false;
-
-            //btn.setBackgroundColor(Color.rgb(31, 73, 212));
-
-            if(result.equals(ERROR_PING_FAILED)) {
-                tv.setTextSize(20);
-                tv.setText(R.string.ping_failed);
-                tv.setTextColor(Color.RED);
-            } else {
-                tv.setTextSize(50);
-                tv.setTextColor(Color.GRAY);
-                tv.setText(result);
-            }
-
-        }
-
-        @Override
-        protected void onCancelled(){
-            btn.setText(R.string.ping);
-            //btn.setBackgroundColor(Color.rgb(31, 73, 212));
-            pb.setVisibility(ProgressBar.INVISIBLE);
-            PING_IN_PROGRESS = false;
-        }
-    }*/
 }

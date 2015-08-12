@@ -25,6 +25,10 @@
     <string name="ping">Ping</string>
     <string name="cancel">Cancel</string>
     <string name="default_url">www.google.com</string>
+    <string name="title_activity_ping_detail">Ping Details</string>
+    <string name="rtt_avg_label">Average</string>
+    <string name="rtt_min_label">Minimum</string>
+    <string name="rtt_max_label">Maximum</string>
 
 
 </resources>

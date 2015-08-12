@@ -17,92 +17,76 @@
 package ca.shoaib.ping;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class PingTask extends AsyncTask<String, Void, String> {
+public class PingTask extends AsyncTask<String, Void, PingResult> {
 
     private static final String DEBUG_TAG = PingTask.class.getSimpleName();
     private static final String ERROR_PING_FAILED = "ERROR_PING_FAILED";
     private static final String ERROR_NO_INTERNET = "ERROR_NO_INTERNET";
+    private static final String DEFAULT_URL = "www.google.com";
+    private static final String PING_PATH = "/system/bin/ping";
+
+    public static final int PING_ERROR_NOERROR = 0;
+    public static final int PING_ERROR_NOTREACHABLE = 1;
+    public static final String PING_RESULT = "ping_result";
+
     private boolean PING_IN_PROGRESS = false;
     private Context mContext;
-    private TextView tv;
-    private ProgressBar pb;
-    private Button btn;
+    private PingResult mPingResult;
+    private int mNumberOfPings = 3;
+    private float mPingInterval = 0.2f;
 
 
-    public PingTask(Context context,
-                    TextView resultText,
-                    ProgressBar progressBar,
-                    Button pingButton) {
+    public PingTask(Context context) {
         mContext = context;
-        tv = resultText;
-        pb = progressBar;
-        btn = pingButton;
     }
 
     @Override
     protected void onPreExecute() {
-        tv.setText("");
-        pb.setVisibility(ProgressBar.VISIBLE);
-        btn.setText(R.string.cancel);
-        PING_IN_PROGRESS = true;
+        //mPingResult = new PingResult();
     }
 
     @Override
-    protected String doInBackground(String... urls) {
-
+    protected PingResult doInBackground(String... urls) {
+        mPingResult = new PingResult();
         try {
-            return ping(urls[0]);
+            mPingResult.setRemoteName(urls[0]);
+            mPingResult.setNumberOfPings(mNumberOfPings);
+            ping(urls[0]);
         } catch (Exception e) {
             Log.e(DEBUG_TAG, "exception", e);
-            return ERROR_PING_FAILED;
         }
+        return mPingResult;
     }
     // onPostExecute displays the results of the AsyncTask.
     @Override
-    protected void onPostExecute(String result) {
-        pb.setVisibility(ProgressBar.INVISIBLE);
-        btn.setText(R.string.ping);
-        PING_IN_PROGRESS = false;
-
-        //btn.setBackgroundColor(Color.rgb(31, 73, 212));
-
-        if(result.equals(ERROR_PING_FAILED)) {
-            tv.setTextSize(20);
-            tv.setText(R.string.ping_failed);
-            tv.setTextColor(Color.RED);
-        } else {
-            tv.setTextSize(50);
-            tv.setTextColor(Color.GRAY);
-            tv.setText(result);
-        }
+    protected void onPostExecute(PingResult pingResult) {
+        Intent intent = new Intent(mContext, PingDetailActivity.class);
+        Log.d(DEBUG_TAG, pingResult.toString());
+        intent.putExtra(PING_RESULT, mPingResult);
+        mContext.startActivity(intent);
     }
 
     @Override
     protected void onCancelled(){
-        btn.setText(R.string.ping);
-        //btn.setBackgroundColor(Color.rgb(31, 73, 212));
-        pb.setVisibility(ProgressBar.INVISIBLE);
-        PING_IN_PROGRESS = false;
+
     }
 
-    private String ping(String url) {
+    private void ping(String url) {
 
-
-        if(url.equals("")) url = "www.google.com";
-        String command = "/system/bin/ping -c 5 -q -i 0.2 " + url;
-
+        String command = PING_PATH
+                + " -c " + mNumberOfPings
+                + " -q "
+                + " -i " + mPingInterval + " "
+                + (url.equals("") ? DEFAULT_URL : url);
 
         String result = "";
         Process process = null;
@@ -111,11 +95,10 @@ public class PingTask extends AsyncTask<String, Void, String> {
             process = Runtime.getRuntime().exec(command);
             DataInputStream osRes = new DataInputStream(process.getInputStream());
             BufferedReader reader = new BufferedReader(new InputStreamReader(osRes));
-
             String line;
 
             try {
-                while ((line = reader.readLine()) != null || reader.read() !=-1) {
+                while ((line = reader.readLine()) != null || reader.read() != -1) {
 
                     result += line + "\n";
                     lastLine = line;
@@ -127,26 +110,41 @@ public class PingTask extends AsyncTask<String, Void, String> {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            Log.d(DEBUG_TAG, lastLine);
+            //Log.d(DEBUG_TAG, "result = ");
+            Log.d(DEBUG_TAG, "result = " + result);
+            //Log.d(DEBUG_TAG, "lastLine = ");
+            Log.d(DEBUG_TAG, "lastLine = " + lastLine + " end_last_line");
         }
-        return parseMeanRTT(lastLine);
+        parseRtts(lastLine);
     }
 
-    private String parseMeanRTT(String lastLine) {
-        String delims = "[/]+";
+    private void parseRtts(String lastLine) {
+        String delims = "[/=]+";
         String[] tokens = lastLine.split(delims);
         for(int i = 0; i < tokens.length; i++) {
             Log.d(DEBUG_TAG, tokens[i]);
         }
+        if (tokens.length > 6) {
+            float minRtt = -1.0f;
+            float avgRtt = -1.0f;
+            float maxRtt = -1.0f;
+            try {
+                minRtt = Float.parseFloat(tokens[4]);
+                avgRtt = Float.parseFloat(tokens[5]);
+                maxRtt = Float.parseFloat(tokens[6]);
+                mPingResult.setErrorCode(PING_ERROR_NOERROR);
 
-        return discardDecimal(tokens[4]);
-
-    }
-
-    private String discardDecimal(String number) {
-        String delim = "[.]";
-        String[] tokens = number.split(delim);
-        return tokens[0] + " ms";
+            } catch (NumberFormatException e) {
+                mPingResult.setErrorCode(PING_ERROR_NOTREACHABLE);
+                e.printStackTrace();
+            } finally {
+                mPingResult.setMinRtt(minRtt);
+                mPingResult.setAvgRtt(avgRtt);
+                mPingResult.setMaxRtt(maxRtt);
+            }
+        } else {
+            mPingResult.setErrorCode(PING_ERROR_NOTREACHABLE);
+        }
     }
 }
 
