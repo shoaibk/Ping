@@ -29,6 +29,8 @@
     <string name="rtt_avg_label">Average</string>
     <string name="rtt_min_label">Minimum</string>
     <string name="rtt_max_label">Maximum</string>
+    <string name="ip_remote_label">Destination IP</string>
+    <string name="ping_count_label">Number of pings</string>
 
 
 </resources>

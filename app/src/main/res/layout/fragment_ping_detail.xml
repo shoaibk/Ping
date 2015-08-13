@@ -26,10 +26,29 @@
     android:orientation="vertical"
     tools:context="ca.shoaib.ping.PingDetailActivityFragment">
 
-    <ImageView
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:id="@+id/ping_status_icon"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_action_phone"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:id="@+id/ping_status_icon"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_action_globe"/>
+
+    </LinearLayout>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -62,6 +81,26 @@
         android:layout_height="wrap_content"
         android:id="@+id/rtt_max_label"
         android:text="@string/rtt_max_label"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/count_value"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/count_label"
+        android:text="@string/ping_count_label"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ip_remote_value"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ip_remote_label"
+        android:text="@string/ip_remote_label"/>
 
 
 

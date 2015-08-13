@@ -91,15 +91,17 @@ public class PingTask extends AsyncTask<String, Void, PingResult> {
         String result = "";
         Process process = null;
         String lastLine = "";
+        String firstLine = "";
         try {
             process = Runtime.getRuntime().exec(command);
             DataInputStream osRes = new DataInputStream(process.getInputStream());
             BufferedReader reader = new BufferedReader(new InputStreamReader(osRes));
             String line;
+            int lineIndex = 0;
 
             try {
                 while ((line = reader.readLine()) != null || reader.read() != -1) {
-
+                    if (lineIndex++ == 0) firstLine = line;
                     result += line + "\n";
                     lastLine = line;
 
@@ -115,6 +117,7 @@ public class PingTask extends AsyncTask<String, Void, PingResult> {
             //Log.d(DEBUG_TAG, "lastLine = ");
             Log.d(DEBUG_TAG, "lastLine = " + lastLine + " end_last_line");
         }
+        parseIP(firstLine);
         parseRtts(lastLine);
     }
 
@@ -145,6 +148,21 @@ public class PingTask extends AsyncTask<String, Void, PingResult> {
         } else {
             mPingResult.setErrorCode(PING_ERROR_NOTREACHABLE);
         }
+    }
+
+    private String parseIP(String line) {
+        String ip = "";
+        String delims = "[()]+";
+        String[] tokens = line.split(delims);
+        for (String token : tokens) {
+            Log.d(DEBUG_TAG, token);
+        }
+        if (tokens.length > 0) {
+            ip = tokens[1];
+        }
+        mPingResult.setRemoteIP(ip);
+
+        return ip;
     }
 }
 

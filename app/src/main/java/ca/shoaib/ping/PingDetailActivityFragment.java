@@ -16,8 +16,8 @@
 
 package ca.shoaib.ping;
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,26 +43,47 @@ public class PingDetailActivityFragment extends Fragment {
                 PingResult pingResult = getArguments().getParcelable(PingTask.PING_RESULT);
 
                 assert pingResult != null;
-                setStatusImage(pingResult.getErrorCode(), fragment_container);
+                ImageView statusImage = (ImageView) fragment_container.findViewById(R.id.ping_status_icon);
+                TextView statusText = (TextView) fragment_container.findViewById(R.id.ping_status_text);
+                setStatus(pingResult.getErrorCode(), statusImage, statusText);
                 Log.d(DEBUG_TAG, pingResult.toString());
-                TextView rtt_avg_value = (TextView) fragment_container.findViewById(R.id.rtt_avg_value);
-                rtt_avg_value.setText("" + pingResult.getAvgRtt() + " ms");
+
+                TextView tv_rtt_avg = (TextView) fragment_container.findViewById(R.id.rtt_avg_value);
+                setRTT(tv_rtt_avg, pingResult.getAvgRtt());
+
+                TextView tv_rtt_min = (TextView) fragment_container.findViewById(R.id.rtt_min_value);
+                setRTT(tv_rtt_min, pingResult.getMinRtt());
+
+                TextView tv_rtt_max = (TextView) fragment_container.findViewById(R.id.rtt_max_value);
+                setRTT(tv_rtt_max, pingResult.getMaxRtt());
+
+                TextView tv_ip_remote = (TextView) fragment_container.findViewById(R.id.ip_remote_value);
+                tv_ip_remote.setText(pingResult.getRemoteIP());
+
+                TextView tv_ping_count = (TextView) fragment_container.findViewById(R.id.count_value);
+                tv_ping_count.setText("" + pingResult.getNumberOfPings());
             }
         }
 
         return fragment_container;
     }
 
-    private void setStatusImage(int errorCode, View container) {
-        ImageView statusImage = (ImageView) container.findViewById(R.id.ping_status_icon);
+    private void setStatus(int errorCode, ImageView statusImage, TextView statusText) {
+
         switch (errorCode) {
             case PingTask.PING_ERROR_NOERROR:
-                statusImage.setImageResource(R.drawable.ok);
+                statusImage.setImageResource(R.drawable.status_ok);
                 break;
             case PingTask.PING_ERROR_NOTREACHABLE:
             default:
-                statusImage.setImageResource(R.drawable.unreachable);
+                statusImage.setImageResource(R.drawable.status_unreachable);
+                statusText.setText("Destination is unreachable");
                 break;
         }
+    }
+
+    private void setRTT(TextView tv, float value) {
+        int rounded = Math.round(value);
+        tv.setText("" + rounded + " ms");
     }
 }
