@@ -30,39 +30,52 @@ import android.widget.TextView;
  */
 public class PingDetailActivityFragment extends Fragment {
     public static final String DEBUG_TAG = PingDetailActivityFragment.class.getSimpleName();
+    private static final String KEY_DETAIL = "ping_detail";
+    private PingResult mPingDetail;
 
     public PingDetailActivityFragment() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            mPingDetail = savedInstanceState.getParcelable(KEY_DETAIL);
+        } else {
+            if (getArguments().containsKey(PingListActivity.PING_DETAIL))
+                mPingDetail = getArguments().getParcelable(PingListActivity.PING_DETAIL);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View fragment_container = inflater.inflate(R.layout.fragment_ping_detail, container, false);
-        if( savedInstanceState == null ) {
-            if (getArguments().containsKey(PingListActivity.PING_DETAIL)) {
-                PingResult pingResult = getArguments().getParcelable(PingListActivity.PING_DETAIL);
+        assert mPingDetail != null;
+        ImageView statusImage = (ImageView) fragment_container.findViewById(R.id.ping_status_icon);
+        TextView statusText = (TextView) fragment_container.findViewById(R.id.ping_status_text);
+        setStatus(mPingDetail.getErrorCode(), statusImage, statusText);
+        Log.d(DEBUG_TAG, mPingDetail.toString());
 
-                assert pingResult != null;
-                ImageView statusImage = (ImageView) fragment_container.findViewById(R.id.ping_status_icon);
-                TextView statusText = (TextView) fragment_container.findViewById(R.id.ping_status_text);
-                setStatus(pingResult.getErrorCode(), statusImage, statusText);
-                Log.d(DEBUG_TAG, pingResult.toString());
+        TextView tv_rtt_avg = (TextView) fragment_container.findViewById(R.id.rtt_avg_value);
+        setRTT(tv_rtt_avg, mPingDetail.getAvgRtt());
 
-                TextView tv_rtt_avg = (TextView) fragment_container.findViewById(R.id.rtt_avg_value);
-                setRTT(tv_rtt_avg, pingResult.getAvgRtt());
+        TextView tv_ip_remote = (TextView) fragment_container.findViewById(R.id.ping_destination_address);
+        tv_ip_remote.setText(mPingDetail.getRemoteIP());
 
-                TextView tv_ip_remote = (TextView) fragment_container.findViewById(R.id.ping_destination_address);
-                tv_ip_remote.setText(pingResult.getRemoteIP());
+        TextView tv_remote_name = (TextView) fragment_container.findViewById(R.id.ping_destination_name);
+        tv_remote_name.setText(mPingDetail.getRemoteName());
 
-                TextView tv_remote_name = (TextView) fragment_container.findViewById(R.id.ping_destination_name);
-                tv_remote_name.setText(pingResult.getRemoteName());
-
-                TextView tv_ping_count = (TextView) fragment_container.findViewById(R.id.count_value);
-                tv_ping_count.setText("" + pingResult.getNumberOfPings());
-            }
-        }
+        TextView tv_ping_count = (TextView) fragment_container.findViewById(R.id.count_value);
+        tv_ping_count.setText("" + mPingDetail.getNumberOfPings());
 
         return fragment_container;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(KEY_DETAIL, mPingDetail);
     }
 
     private void setStatus(int errorCode, ImageView statusImage, TextView statusText) {
