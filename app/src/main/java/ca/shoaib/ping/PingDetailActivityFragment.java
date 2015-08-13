@@ -51,14 +51,11 @@ public class PingDetailActivityFragment extends Fragment {
                 TextView tv_rtt_avg = (TextView) fragment_container.findViewById(R.id.rtt_avg_value);
                 setRTT(tv_rtt_avg, pingResult.getAvgRtt());
 
-                TextView tv_rtt_min = (TextView) fragment_container.findViewById(R.id.rtt_min_value);
-                setRTT(tv_rtt_min, pingResult.getMinRtt());
-
-                TextView tv_rtt_max = (TextView) fragment_container.findViewById(R.id.rtt_max_value);
-                setRTT(tv_rtt_max, pingResult.getMaxRtt());
-
-                TextView tv_ip_remote = (TextView) fragment_container.findViewById(R.id.ip_remote_value);
+                TextView tv_ip_remote = (TextView) fragment_container.findViewById(R.id.ping_destination_address);
                 tv_ip_remote.setText(pingResult.getRemoteIP());
+
+                TextView tv_remote_name = (TextView) fragment_container.findViewById(R.id.ping_destination_name);
+                tv_remote_name.setText(pingResult.getRemoteName());
 
                 TextView tv_ping_count = (TextView) fragment_container.findViewById(R.id.count_value);
                 tv_ping_count.setText("" + pingResult.getNumberOfPings());
@@ -72,12 +69,13 @@ public class PingDetailActivityFragment extends Fragment {
 
         switch (errorCode) {
             case PingTask.PING_ERROR_NOERROR:
-                statusImage.setImageResource(R.drawable.status_ok);
+                statusImage.setImageResource(R.drawable.ic_check_circle_black_48dp);
+                statusText.setText("");
                 break;
             case PingTask.PING_ERROR_NOTREACHABLE:
             default:
-                statusImage.setImageResource(R.drawable.status_unreachable);
-                statusText.setText("Destination is unreachable");
+                statusImage.setImageResource(R.drawable.ic_error_outline_black_48dp);
+                statusText.setText("Ping failed");
                 break;
         }
     }

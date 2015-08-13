@@ -32,7 +32,7 @@
         android:layout_marginTop="16dp"
         android:inputType="textUri"
         android:text="@string/default_url"
-        android:drawableRight="@drawable/ic_action_cancel"
+        android:drawableRight="@android:drawable/ic_menu_close_clear_cancel"
         android:id="@+id/ping_destination"/>
     <Button
         android:layout_width="match_parent"

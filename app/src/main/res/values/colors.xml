@@ -25,4 +25,5 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>
     <color name="background">#454545</color>
+    <color name="error">#F44336</color>
 </resources>
