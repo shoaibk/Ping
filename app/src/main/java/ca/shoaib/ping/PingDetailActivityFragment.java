@@ -39,8 +39,8 @@ public class PingDetailActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View fragment_container = inflater.inflate(R.layout.fragment_ping_detail, container, false);
         if( savedInstanceState == null ) {
-            if (getArguments().containsKey(PingTask.PING_RESULT)) {
-                PingResult pingResult = getArguments().getParcelable(PingTask.PING_RESULT);
+            if (getArguments().containsKey(PingListActivity.PING_DETAIL)) {
+                PingResult pingResult = getArguments().getParcelable(PingListActivity.PING_DETAIL);
 
                 assert pingResult != null;
                 ImageView statusImage = (ImageView) fragment_container.findViewById(R.id.ping_status_icon);

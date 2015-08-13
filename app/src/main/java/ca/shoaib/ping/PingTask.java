@@ -17,7 +17,6 @@
 package ca.shoaib.ping;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -25,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 
 public class PingTask extends AsyncTask<String, Void, PingResult> {
 
@@ -36,7 +36,7 @@ public class PingTask extends AsyncTask<String, Void, PingResult> {
 
     public static final int PING_ERROR_NOERROR = 0;
     public static final int PING_ERROR_NOTREACHABLE = 1;
-    public static final String PING_RESULT = "ping_result";
+    //public static final String PING_RESULT = "ping_result";
 
     private boolean PING_IN_PROGRESS = false;
     private Context mContext;
@@ -44,9 +44,14 @@ public class PingTask extends AsyncTask<String, Void, PingResult> {
     private int mNumberOfPings = 3;
     private float mPingInterval = 0.2f;
 
+    private List<PingResult> mPingList;
+    private PingListAdapter mPingAdapter;
 
-    public PingTask(Context context) {
+
+    public PingTask(Context context, List<PingResult> pingList, PingListAdapter pingListAdapter) {
         mContext = context;
+        mPingList = pingList;
+        mPingAdapter = pingListAdapter;
     }
 
     @Override
@@ -69,10 +74,12 @@ public class PingTask extends AsyncTask<String, Void, PingResult> {
     // onPostExecute displays the results of the AsyncTask.
     @Override
     protected void onPostExecute(PingResult pingResult) {
-        Intent intent = new Intent(mContext, PingDetailActivity.class);
+        /*Intent intent = new Intent(mContext, PingDetailActivity.class);
         Log.d(DEBUG_TAG, pingResult.toString());
         intent.putExtra(PING_RESULT, mPingResult);
-        mContext.startActivity(intent);
+        mContext.startActivity(intent);*/
+        mPingList.add(pingResult);
+        mPingAdapter.notifyDataSetChanged();
     }
 
     @Override

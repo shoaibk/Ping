@@ -23,11 +23,13 @@ import android.view.MenuItem;
 
 public class PingDetailActivity extends AppCompatActivity {
     public static final String DEBUG_TAG = PingDetailActivity.class.getSimpleName();
+    boolean mIsLargeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ping_detail);
+        mIsLargeLayout = getResources().getBoolean(R.bool.large_layout);
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
         // (e.g. when rotating the screen from portrait to landscape).
@@ -42,8 +44,8 @@ public class PingDetailActivity extends AppCompatActivity {
             // using a fragment transaction.
             Bundle arguments = new Bundle();
             //Log.d(DEBUG_TAG, getIntent().getParcelableExtra());
-            arguments.putParcelable(PingTask.PING_RESULT,
-                    getIntent().getParcelableExtra(PingTask.PING_RESULT));
+            arguments.putParcelable(PingListActivity.PING_DETAIL,
+                    getIntent().getParcelableExtra(PingListActivity.PING_DETAIL));
             PingDetailActivityFragment fragment = new PingDetailActivityFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
