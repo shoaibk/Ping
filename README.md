@@ -5,18 +5,19 @@ Android Ping utility wrapper that uses the underlying linux ping utility. The ap
 - Shows Average Round Trip Time (RTT)
 - Detects if the device is offline/online
 - Uses AppCompat theme
+- Support Tablet Layout
 
 ### Todo
-- Create model class - PingResult implementing Parcelable
-- Show connection type of the user - Wifi/GSM/3G/4G
+- List view of ping: Remote name, remote IP, average rtt, up/down
+- Searchbar, ping button on one line
+- ContentProvider for common website names
+- create search widget
+- create mockups
 
+- Show connection type of the user - Wifi/GSM/3G/4G
 - Show pulic IP address of the user
-- Separate AsyncTask into a class
 - Show previous ping results into a Listview
-- Show current ping result into a Detail view
 - Use fragment to support tablet layout
 - Show number of ping (icmp) packets
-- Show min/avg/max in a bar
 - Show location of the IP
 - Show estimated distance to the remote IP
-- ContentProvider for common website names
